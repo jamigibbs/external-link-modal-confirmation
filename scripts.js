@@ -1,7 +1,6 @@
 const externalLinkModal = (function() {
-  let resource
-  let url = ''
-  
+  let resource, active = false
+
   return {
     settings: {
       externalLinks: [...document.querySelectorAll('.ext_link')],
@@ -9,13 +8,14 @@ const externalLinkModal = (function() {
       closeX: document.querySelector(".close"),
       btnContinue: document.querySelector('.btn-continue'),
       btnClose: document.querySelector(".btn-close"),
+      externalUrl: ''
     },
-    
+
     init: function() {
       resource = this.settings
       this.load()
     },
-    
+
     load: function() {
       resource.externalLinks.forEach((link) => {
         link.addEventListener('click', (event) => this.externalLinkClick(event))
@@ -24,25 +24,26 @@ const externalLinkModal = (function() {
 
     externalLinkClick: function(event) {
       event.preventDefault()
-      url = event.target.href
-      this.displayModal(url)
+      resource.externalUrl = event.target.href
+      this.displayModal(resource.externalUrl)
     },
-    
-    displayModal: function(url) {
+
+    displayModal: function() {
+      active = true
       resource.modal.style.display = 'block'
-      
+
       resource.btnContinue.addEventListener('click', () => {
-        this.launchExternalResource(url)
+        this.launchExternalResource(resource.externalUrl)
       })
-      
+
       resource.btnClose.addEventListener('click', () => {
         this.closeModal()
       })
-      
+
       resource.closeX.addEventListener('click', () => {
         this.closeModal()
       })
-      
+
       // When the user clicks anywhere outside of the modal, close it
       window.onclick = (event) => {
         if (event.target == resource.modal) {
@@ -50,17 +51,20 @@ const externalLinkModal = (function() {
         }
       }
     },
-    
+
     closeModal: function() {
       resource.modal.style.display = 'none'
     },
-    
-    launchExternalResource: function(){
-      window.open(url)
-      resource.modal.style.display = 'none'
+
+    launchExternalResource: function(url){
+      if (active) {
+        window.open(url)
+        resource.modal.style.display = 'none'
+        active = false
+      }
     }
   }
-  
+
 }())
 
 externalLinkModal.init()
