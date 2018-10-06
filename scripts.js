@@ -5,9 +5,8 @@ const externalLinkModal = (function() {
     settings: {
       externalLinks: [...document.querySelectorAll('.ext_link')],
       modal: document.querySelector('.external-link-modal'),
-      closeX: document.querySelector(".close"),
       btnContinue: document.querySelector('.btn-continue'),
-      btnClose: document.querySelector(".btn-close"),
+      btnClose: [...document.querySelectorAll('.btn-close')],
       externalUrl: ''
     },
 
@@ -36,12 +35,8 @@ const externalLinkModal = (function() {
         this.launchExternalResource(resource.externalUrl)
       })
 
-      resource.btnClose.addEventListener('click', () => {
-        this.closeModal()
-      })
-
-      resource.closeX.addEventListener('click', () => {
-        this.closeModal()
+      resource.btnClose.forEach((close) => {
+        close.addEventListener('click', () => this.closeModal())
       })
 
       // When the user clicks anywhere outside of the modal, close it
